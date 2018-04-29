@@ -1,0 +1,218 @@
+Make a truffle project - go to directory and mkdir ProjectFolder
+$truffle init
+
+In the contracts folder, make a solidity contract, save it.
+In the migrations folder, make a new file "2_deploy_contracts.js", edit it an key in this below code
+
+var Greetings = artifacts.require("./Greetings.sol");
+module.exports = function(deployer) {
+  deployer.deploy(Greetings);
+};
+
+Maybe delete the additional js file in test folder (not the truffle.js file, it is needed)
+In truffle.js, key in this
+
+module.exports = {
+  // See <http://truffleframework.com/docs/advanced/configuration>
+  // to customize your Truffle configuration!
+  networks: {
+    ganache: {
+      host: "localhost",
+      port: 7545,
+      network_id: "*"
+    }
+  }
+};
+
+
+Migrate and Compile a contract from Terminal opened at project folder with ganache running
+$truffle migrate --compile-all --reset --network ganache
+
+
+Instantiating a Contract with an identifier "app" in truffle console
+>Greetings.deployed().then(function(instance) {app = instance;})
+
+Calling a function in Greetings contract
+>app.getGreetings()
+
+Calling a function from a particular account - account[0]
+>app.getGreetings({from: web3.eth.accounts[0]})
+
+List accounts
+>web3.eth.accounts
+
+get specific account
+>web3.eth.accounts[2]
+
+get balance as Big Number
+>web3.eth.getBalance(web3.eth.accounts[2])
+
+get balance in Ether - this doesnt require any gas as it is executed locally as function getBalance is declared as view
+>web3.fromWei(web3.eth.getBalance(web3.eth.accounts[1]),"ether").toNumber()
+
+make a transaction from an account - say account[1] by calling the setGreetings() with "newValue". Need the instance "app" we created earlier
+>app.setGreetings("NewValue", {from: web3.eth.accounts[1]})
+//we get a transaction receipt as result which also mentions gas used
+
+check whether the transaction changed the value of the message
+>app.getGreetings()
+
+This change in the message value is universal and is the same for any transaction
+ie
+>app.getGreetings({from: web3.eth.accounts[2]})
+>app.getGreetings({from: web3.eth.accounts[4]})
+//Both will result in the same "NewValue"
+
+If you check balance from accounts[1], it will have reduced from 100 because you did the transaction setGreetings() from account[1]
+>web3.fromWei(web3.eth.getBalance(web3.eth.accounts[1]), "ether").toNumber()
+//result will be <100
+
+
+
+
+#####################################################################################################################################
+
+WORKFLOW IS GIVEN
+
+#####################################################################################################################################
+deltonmyalil@ubuntu:~$ cd ChainSkills/Private
+bash: cd: ChainSkills/Private: No such file or directory
+deltonmyalil@ubuntu:~$ cd ChainSkills
+deltonmyalil@ubuntu:~/ChainSkills$ dir
+Metamask\ details  Training  private
+deltonmyalil@ubuntu:~/ChainSkills$ cd Training
+deltonmyalil@ubuntu:~/ChainSkills/Training$ dir
+Greetings  GreetingsTruffle
+deltonmyalil@ubuntu:~/ChainSkills/Training$ ls
+Greetings  GreetingsTruffle
+deltonmyalil@ubuntu:~/ChainSkills/Training$ cd GreetingsTruffle
+deltonmyalil@ubuntu:~/ChainSkills/Training/GreetingsTruffle$ dir
+build  contracts  migrations  test  truffle.js
+deltonmyalil@ubuntu:~/ChainSkills/Training/GreetingsTruffle$ truffle migrate --compile-all --reset --network ganache
+Compiling ./contracts/Greetings.sol...
+Compiling ./contracts/Migrations.sol...
+Writing artifacts to ./build/contracts
+
+Using network 'ganache'.
+
+Running migration: 1_initial_migration.js
+  Replacing Migrations...
+  ... 0xc94264b172482ad4387310bad7e2d5c3bb8be657da826ec19844525327d307bf
+  Migrations: 0x92eb0902a69f9bac3e1884926e885b4c2ee97b70
+Saving successful migration to network...
+  ... 0x91eb02438098a3be150f86d261bc74d546f4b442933b7010ee52840b1f1d2c12
+Saving artifacts...
+Running migration: 2_deploy_contracts.js
+  Replacing Greetings...
+  ... 0x3af1b8118adf7b50b75db9ed1d7b82bee6a5246208569826a636c38faf9ed87c
+  Greetings: 0x51aa4d5a162e2470eabd0bb670501977e7284d88
+Saving successful migration to network...
+  ... 0x1ec23422e6965bdac0b6e54da6373ddf287f819eef66fe4fd1ffdc2c806b5759
+Saving artifacts...
+deltonmyalil@ubuntu:~/ChainSkills/Training/GreetingsTruffle$ ls
+build  contracts  migrations  test  truffle.js
+deltonmyalil@ubuntu:~/ChainSkills/Training/GreetingsTruffle$ truffle console --network ganache
+truffle(ganache)> web3.eth.assounts
+undefined
+truffle(ganache)> web3.eth.accounts
+[ '0x9482207da209407590566926f32542f33ae2a172',
+  '0xa2a5e4834863e54f672bcb06e2225d9fb87996c4',
+  '0x866821fc52b52c1cbade542b0237234c8d9e21d1',
+  '0x2dad1fc53a672deb99551b4be6a6f8b658c5e5a0',
+  '0x3e2871b47de117766c9e093fe842373a06e592e4',
+  '0xc0b423d3991e6e588ef73b0cc8d697bc7963d72d',
+  '0x4d85bc112dfffa63dc2f616a0e287ad53d187053',
+  '0x76e31169c23ebf888e02b2b10dec98d58ded19b8',
+  '0x1defeaf2247f171b0abbbb546deaf93e95181639',
+  '0x867fe170c2f0bb6175f3095f27229dc88e9c40a2' ]
+truffle(ganache)> web3.eth.getBalance(web3.eth.accouonts[0])
+TypeError: Cannot read property '0' of undefined
+truffle(ganache)> web3.eth.getBalance(web3.eth.accouts[0])
+TypeError: Cannot read property '0' of undefined
+truffle(ganache)> web3.eth.getBalance(web3.eth.accounts[0])
+BigNumber { s: 1, e: 19, c: [ 999377, 46700000000000 ] }
+truffle(ganache)> web3.eth.getBalance(web3.eth.accounts)
+Error: invalid address
+    at inputAddressFormatter (/usr/local/lib/node_modules/truffle/build/cli.bundled.js:33350:11)
+    at /usr/local/lib/node_modules/truffle/build/cli.bundled.js:37938:28
+    at Array.map (<anonymous>)
+    at Method.formatInput (/usr/local/lib/node_modules/truffle/build/cli.bundled.js:37937:32)
+    at Method.toPayload (/usr/local/lib/node_modules/truffle/build/cli.bundled.js:37963:23)
+    at Eth.send [as getBalance] (/usr/local/lib/node_modules/truffle/build/cli.bundled.js:37988:30)
+truffle(ganache)> toWei
+ReferenceError: toWei is not defined
+truffle(ganache)> toWei()
+ReferenceError: toWei is not defined
+truffle(ganache)> Greetings.deployed().then(function(instance) {app = instance;})
+undefined
+truffle(ganache)> app.getGreetings
+{ [Function]
+  call: [Function],
+  sendTransaction: [Function],
+  request: [Function: bound ],
+  estimateGas: [Function] }
+truffle(ganache)> app.getGreetings()
+'Im ready'
+truffle(ganache)> app.getGreetings({from: web3.eth.accounts[1]})
+'Im ready'
+truffle(ganache)> web3.eth.accounts
+[ '0x9482207da209407590566926f32542f33ae2a172',
+  '0xa2a5e4834863e54f672bcb06e2225d9fb87996c4',
+  '0x866821fc52b52c1cbade542b0237234c8d9e21d1',
+  '0x2dad1fc53a672deb99551b4be6a6f8b658c5e5a0',
+  '0x3e2871b47de117766c9e093fe842373a06e592e4',
+  '0xc0b423d3991e6e588ef73b0cc8d697bc7963d72d',
+  '0x4d85bc112dfffa63dc2f616a0e287ad53d187053',
+  '0x76e31169c23ebf888e02b2b10dec98d58ded19b8',
+  '0x1defeaf2247f171b0abbbb546deaf93e95181639',
+  '0x867fe170c2f0bb6175f3095f27229dc88e9c40a2' ]
+truffle(ganache)> web3.eth.getBalance(web3.eth.accounts[0])
+BigNumber { s: 1, e: 19, c: [ 999377, 46700000000000 ] }
+truffle(ganache)> web3.eth.accounts[3]
+'0x2dad1fc53a672deb99551b4be6a6f8b658c5e5a0'
+truffle(ganache)> web3.fromWei(web3.eth.getBalance(web3.eth.accounts[1]),"ether").toNumber()
+100
+truffle(ganache)> web3.fromWei(web3.eth.getBalance(web3.eth.accounts[3]),"ether").toNumber()
+100
+truffle(ganache)> web3.eth.coinbase
+'0x9482207da209407590566926f32542f33ae2a172'
+truffle(ganache)> web3.fromWei(web3.eth.getBalance(web3.eth.coinbase),"ether").toNumber()
+99.9377467
+truffle(ganache)> web3.fromWei(web3.eth.getBalance(web3.eth.accounts[4]),"ether")
+BigNumber { s: 1, e: 2, c: [ 100 ] }
+truffle(ganache)> web3.fromWei(web3.eth.getBalance(web3.eth.accounts[4]),"ether").toNumber()
+100
+truffle(ganache)> web3.eth.getBalance(coionbase).toNumber()
+ReferenceError: coionbase is not defined
+truffle(ganache)> web3.eth.getBalance(coinbase).toNumber()
+ReferenceError: coinbase is not defined
+truffle(ganache)> web3.eth.getBalance(web3.eth.coinbase).toNumber()
+99937746700000000000
+truffle(ganache)> 
+undefined
+truffle(ganache)> 
+undefined
+truffle(ganache)> app.setGreetings("New Value", {from: web3.eth.accounts[1]})
+{ tx: '0xe0b7cda5b03e2d4f7464902d45f616ed8730f4bbc4acf380394a00a32612049d',
+  receipt: 
+   { transactionHash: '0xe0b7cda5b03e2d4f7464902d45f616ed8730f4bbc4acf380394a00a32612049d',
+     transactionIndex: 0,
+     blockHash: '0xe06b87c3ce73c9e8c5922b184ae9fc3a08dc0f5c39bd1a5ddfdf1e252bad92bc',
+     blockNumber: 5,
+     gasUsed: 33288,
+     cumulativeGasUsed: 33288,
+     contractAddress: null,
+     logs: [],
+     status: '0x01',
+     logsBloom: '0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000' },
+  logs: [] }
+truffle(ganache)> app.getGreetings()
+'New Value'
+truffle(ganache)> app.getGreetings({from: web3.eth.accounts[0]})
+'New Value'
+truffle(ganache)> app.getGreetings({from: web3.eth.accounts[4]})
+'New Value'
+truffle(ganache)> web3.fromWei(web3.eth.getBalance(web3.eth.accounts[1]), "ether").toNumber()
+99.9966712
+truffle(ganache)> .exit
+deltonmyalil@ubuntu:~/ChainSkills/Training/GreetingsTruffle$
