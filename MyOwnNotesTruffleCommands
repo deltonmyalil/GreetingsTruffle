@@ -67,12 +67,19 @@ If you check balance from accounts[1], it will have reduced from 100 because you
 >web3.fromWei(web3.eth.getBalance(web3.eth.accounts[1]), "ether").toNumber()
 //result will be <100
 
+############################  SENDINIG ETHER   ################################
+
+Sending 5 ethers from account indexed 0 to account indexed as 1
+You need ganache running and truffle attached to ganache using truffle console --network ganache
+>web3.eth.sendTransaction({from: web3.eth.accounts[0], to: web3.eth.accounts[1], value: web3.toWei(5, "ether")})
+//this will return a transaction hash
+//it will be mined and be commited to a block. This is a transaction and it will cost an additional gas from the sender as a reward to the miner.
 
 
 
-#####################################################################################################################################
 
-WORKFLOW IS GIVEN
+
+WORKFLOW IS GIVEN HERE
 
 #####################################################################################################################################
 deltonmyalil@ubuntu:~$ cd ChainSkills/Private
@@ -216,3 +223,10 @@ truffle(ganache)> web3.fromWei(web3.eth.getBalance(web3.eth.accounts[1]), "ether
 99.9966712
 truffle(ganache)> .exit
 deltonmyalil@ubuntu:~/ChainSkills/Training/GreetingsTruffle$
+deltonmyalil@ubuntu:~/ChainSkills/Training/GreetingsTruffle$ truffle console --network ganache
+truffle(ganache)> web3.eth.sendTransaction({from: web3.eth.accounts[0], to: web3.eth.accounts[1], value: web3.toWei(5, "ether")})
+'0xc7940877ca5da5652d5bd60848eccf173c17d0115dbbf1b939619c775337af6e'
+truffle(ganache)> web3.eth.getBalance(web3.eth.accouunts[0]).toNumber()
+TypeError: Cannot read property '0' of undefined
+truffle(ganache)> web3.eth.getBalance(web3.eth.accounts[0]).toNumber()
+94999999999999980000
