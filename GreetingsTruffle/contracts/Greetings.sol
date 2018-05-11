@@ -4,7 +4,7 @@ contract Greetings {
   string message;
 
   function Greetings() public {
-    message = "Im ready";
+    message = "Initialized first time";
   }
 
   function setGreetings(string _message) public {
